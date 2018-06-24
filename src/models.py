@@ -58,7 +58,7 @@ def build_model(params, with_dis):
         tgt_emb = None
 
     # mapping
-    mapping = nn.Linear(params.emb_dim, params.emb_dim, bias=False)
+    mapping = nn.Linear(params.emb_dim, params.emb_dim, bias=True)
     if getattr(params, 'map_id_init', True):
         mapping.weight.data.copy_(torch.diag(torch.ones(params.emb_dim)))
 
