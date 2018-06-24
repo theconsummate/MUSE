@@ -1,3 +1,7 @@
+# remove data and dumped files
+data/*
+dumped/*
+
 # Created by https://www.gitignore.io/api/vim,python
 
 ### Python ###
