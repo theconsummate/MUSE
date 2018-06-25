@@ -35,7 +35,7 @@ parser.add_argument("--emb_dim", type=int, default=300, help="Embedding dimensio
 parser.add_argument("--normalize_embeddings", type=str, default="", help="Normalize embeddings before training")
 
 #TODO
-parser.add_argument("--map_id_init", type=bool_flag, default=False, help="Initialize the mapping as an identity matrix")
+parser.add_argument("--map_hid_dim", type=int, default=512, help="Discriminator hidden layer dimensions")
 
 
 # parse parameters
