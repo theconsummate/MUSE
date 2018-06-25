@@ -126,6 +126,8 @@ def get_candidates(emb1, emb2, params):
         all_pairs = all_pairs[:params.dico_max_size]
 
     # min dico size
+    logger.debug("printing all scores")
+    logger.debug(all_scores)
     diff = all_scores[:, 0] - all_scores[:, 1]
     if params.dico_min_size > 0:
         diff[:params.dico_min_size] = 1e9
