@@ -37,8 +37,11 @@ parser.add_argument("--tgt_lang", type=str, default='es', help="Target language"
 parser.add_argument("--emb_dim", type=int, default=300, help="Embedding dimension")
 parser.add_argument("--max_vocab", type=int, default=200000, help="Maximum vocabulary size (-1 to disable)")
 # mapping
-parser.add_argument("--map_id_init", type=bool_flag, default=True, help="Initialize the mapping as an identity matrix")
+# TODO modifying the default value here
+parser.add_argument("--map_id_init", type=bool_flag, default=False, help="Initialize the mapping as an identity matrix")
 parser.add_argument("--map_beta", type=float, default=0.001, help="Beta for orthogonalization")
+parser.add_argument("--map_layers", type=int, default=2, help="Mapping layers")
+parser.add_argument("--map_hid_dim", type=int, default=512, help="Discriminator hidden layer dimensions")
 # discriminator
 parser.add_argument("--dis_layers", type=int, default=2, help="Discriminator layers")
 parser.add_argument("--dis_hid_dim", type=int, default=2048, help="Discriminator hidden layer dimensions")

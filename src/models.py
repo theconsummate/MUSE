@@ -58,7 +58,16 @@ def build_model(params, with_dis):
         tgt_emb = None
 
     # mapping
-    mapping = nn.Linear(params.emb_dim, params.emb_dim, bias=True)
+    # mapping = nn.Linear(params.emb_dim, params.emb_dim, bias=True)
+    # adding hidden layers to mapping with relu activations
+    mapping_layers = [nn.Linear(params.emb_dim, params.map_hid_dim)]
+    mapping_layers.append(nn.LeakyReLU(0.2))
+    for i in range(params.map_layers):
+        mapping_layers.append(nn.Linear(params.map_hid_dim, params.map_hid_dim))
+        mapping_layers.append(nn.LeakyReLU(0.2))
+    mapping_layers.append(nn.Linear( params.map_hid_dim, params.emb_dim))
+    mapping = nn.Sequential(*mapping_layers)
+
     if getattr(params, 'map_id_init', True):
         mapping.weight.data.copy_(torch.diag(torch.ones(params.emb_dim)))
 

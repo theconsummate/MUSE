@@ -222,10 +222,12 @@ class Trainer(object):
             self.best_valid_metric = to_log[metric]
             logger.info('* Best value for "%s": %.5f' % (metric, to_log[metric]))
             # save the mapping
-            W = self.mapping.weight.data.cpu().numpy()
+            # TODO save the model
+            # W = self.mapping.weight.data.cpu().numpy()
             path = os.path.join(self.params.exp_path, 'best_mapping.pth')
             logger.info('* Saving the mapping to %s ...' % path)
-            torch.save(W, path)
+            # torch.save(W, path)
+            torch.save(self.mapping, path)
 
     def reload_best(self):
         """
@@ -235,10 +237,11 @@ class Trainer(object):
         logger.info('* Reloading the best model from %s ...' % path)
         # reload the model
         assert os.path.isfile(path)
-        to_reload = torch.from_numpy(torch.load(path))
-        W = self.mapping.weight.data
-        assert to_reload.size() == W.size()
-        W.copy_(to_reload.type_as(W))
+        self.mapping = torch.load(path)
+        # to_reload = torch.from_numpy(torch.load(path))
+        # W = self.mapping.weight.data
+        # assert to_reload.size() == W.size()
+        # W.copy_(to_reload.type_as(W))
 
     def export(self):
         """
