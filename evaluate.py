@@ -34,6 +34,9 @@ parser.add_argument("--max_vocab", type=int, default=200000, help="Maximum vocab
 parser.add_argument("--emb_dim", type=int, default=300, help="Embedding dimension")
 parser.add_argument("--normalize_embeddings", type=str, default="", help="Normalize embeddings before training")
 
+#TODO
+parser.add_argument("--map_id_init", type=bool_flag, default=False, help="Initialize the mapping as an identity matrix")
+
 
 # parse parameters
 params = parser.parse_args()
