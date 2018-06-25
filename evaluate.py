@@ -36,6 +36,8 @@ parser.add_argument("--normalize_embeddings", type=str, default="", help="Normal
 
 #TODO
 parser.add_argument("--map_hid_dim", type=int, default=512, help="Discriminator hidden layer dimensions")
+parser.add_argument("--map_layers", type=int, default=2, help="Mapping layers")
+
 
 
 # parse parameters
