@@ -114,6 +114,9 @@ def get_candidates(emb1, emb2, params):
     all_pairs = all_pairs[reordered]
 
     # max dico words rank
+    logger.debug("max dico words rank")
+    logger.debug(all_scores)
+    logger.debug(all_scores.size())
     if params.dico_max_rank > 0:
         selected = all_pairs.max(1)[0] <= params.dico_max_rank
         mask = selected.unsqueeze(1).expand_as(all_scores).clone()
@@ -122,12 +125,14 @@ def get_candidates(emb1, emb2, params):
 
     # max dico size
     if params.dico_max_size > 0:
+        logger.debug("inside max dico size")
         all_scores = all_scores[:params.dico_max_size]
         all_pairs = all_pairs[:params.dico_max_size]
 
     # min dico size
-    logger.debug("printing all scores")
+    logger.debug("min dico size")
     logger.debug(all_scores)
+    logger.debug(all_scores.size())    
     diff = all_scores[:, 0] - all_scores[:, 1]
     if params.dico_min_size > 0:
         diff[:params.dico_min_size] = 1e9
