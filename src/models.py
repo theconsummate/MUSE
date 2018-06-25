@@ -68,7 +68,7 @@ def build_model(params, with_dis):
     mapping_layers.append(nn.Linear( params.map_hid_dim, params.emb_dim))
     mapping = nn.Sequential(*mapping_layers)
 
-    if getattr(params, 'map_id_init', True):
+    if getattr(params, 'map_id_init', False):
         mapping.weight.data.copy_(torch.diag(torch.ones(params.emb_dim)))
 
     # discriminator
