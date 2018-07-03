@@ -22,20 +22,24 @@ class Discriminator(nn.Module):
         self.dis_dropout = params.dis_dropout
         self.dis_input_dropout = params.dis_input_dropout
 
-        layers = [nn.Dropout(self.dis_input_dropout)]
-        for i in range(self.dis_layers + 1):
-            input_dim = self.emb_dim if i == 0 else self.dis_hid_dim
-            output_dim = 1 if i == self.dis_layers else self.dis_hid_dim
-            layers.append(nn.Linear(input_dim, output_dim))
-            if i < self.dis_layers:
-                layers.append(nn.LeakyReLU(0.2))
-                layers.append(nn.Dropout(self.dis_dropout))
-        layers.append(nn.Sigmoid())
-        self.layers = nn.Sequential(*layers)
+        self.hid_channels = 32
+
+        self.conv1 = nn.Sequential(nn.Conv1d(in_channels=1, out_channels=self.hid_channels, kernel_size=7, padding=3),
+            nn.ReLU(),
+            )
+        self.conv2 = nn.Sequential(nn.Conv1d(in_channels=self.hid_channels, out_channels=self.hid_channels, kernel_size=5, padding=2),
+            nn.ReLU(),
+            )
+        self.conv3 = nn.Sequential(nn.Conv1d(in_channels=self.hid_channels, out_channels=1, kernel_size=3, padding=1),
+            nn.Sigmoid(),
+            )
 
     def forward(self, x):
         assert x.dim() == 2 and x.size(1) == self.emb_dim
-        return self.layers(x).view(-1)
+        x = self.conv1(x)
+        x = self.conv2(x)
+        x = self.conv3(x)
+        return x.view(-1)
 
 
 def build_model(params, with_dis):
