@@ -31,6 +31,7 @@ class Discriminator(nn.Module):
             nn.ReLU(),
             )
         self.conv3 = nn.Sequential(nn.Conv1d(in_channels=self.hid_channels, out_channels=1, kernel_size=3, padding=1),
+            nn.Linear(self.emb_dim, 1)
             nn.Sigmoid(),
             )
 
