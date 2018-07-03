@@ -36,7 +36,7 @@ class Discriminator(nn.Module):
 
     def forward(self, x):
         assert x.dim() == 2 and x.size(1) == self.emb_dim
-        x = self.conv1(x)
+        x = self.conv1(x.view(-1, 1, self.emb_dim))
         x = self.conv2(x)
         x = self.conv3(x)
         return x.view(-1)
