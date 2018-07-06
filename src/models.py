@@ -37,6 +37,21 @@ class Discriminator(nn.Module):
         assert x.dim() == 2 and x.size(1) == self.emb_dim
         return self.layers(x).view(-1)
 
+class Mapping(nn.Module):
+    def __init__(self, params):
+        super(Mapping, self).__init__()
+        self.linear = nn.Linear(params.emb_dim, params.emb_dim, bias=False)
+        self.relu = nn.Sequential(
+            nn.Linear(params.emb_dim, params.emb_dim),
+            nn.ReLU()
+            )
+
+        if getattr(params, 'map_id_init', True):
+            self.linear.weight.data.copy_(torch.diag(torch.ones(params.emb_dim)))
+    
+    def forward(self, x):
+        z = torch.add(self.linear(x), self.relu(x))
+        return z
 
 def build_model(params, with_dis):
     """
@@ -58,9 +73,10 @@ def build_model(params, with_dis):
         tgt_emb = None
 
     # mapping
-    mapping = nn.Linear(params.emb_dim, params.emb_dim, bias=False)
-    if getattr(params, 'map_id_init', True):
-        mapping.weight.data.copy_(torch.diag(torch.ones(params.emb_dim)))
+    # mapping = nn.Linear(params.emb_dim, params.emb_dim, bias=False)
+    mapping = Mapping(params)
+    # if getattr(params, 'map_id_init', True):
+    #     mapping.weight.data.copy_(torch.diag(torch.ones(params.emb_dim)))
 
     # discriminator
     discriminator = Discriminator(params) if with_dis else None
