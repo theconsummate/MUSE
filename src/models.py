@@ -58,7 +58,10 @@ class Mapping(nn.Module):
         if self.is_cuda:
             z = z.cuda()
         for relu in self.relus:
-            z = torch.add(z, relu(x))
+            xxx = relu(x)
+            print(type(z))
+            print(type(xxx))
+            z = torch.add(z, xxx)
         return z
 
 def build_model(params, with_dis):
