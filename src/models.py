@@ -40,8 +40,10 @@ class Discriminator(nn.Module):
 class Mapping(nn.Module):
     def __init__(self, params):
         super(Mapping, self).__init__()
-        self.cuda = params.cuda
+        
+        self.is_cuda = params.cuda
         num_relu = 4
+        
         self.linear = nn.Linear(params.emb_dim, params.emb_dim, bias=False)
         self.relus = []
         for i in range(num_relu):
@@ -53,7 +55,7 @@ class Mapping(nn.Module):
     
     def forward(self, x):
         z = self.linear(x)
-        if self.cuda:
+        if self.is_cuda:
             z = z.cuda()
         for relu in self.relus:
             z = torch.add(z, relu(x))
