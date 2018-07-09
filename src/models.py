@@ -42,11 +42,11 @@ class Mapping(nn.Module):
         super(Mapping, self).__init__()
         
         self.is_cuda = params.cuda
-        num_relu = 4
+        self.num_relu = 4
         
         self.linear = nn.Linear(params.emb_dim, params.emb_dim, bias=False)
         self.relus = []
-        for i in range(num_relu):
+        for i in range(self.num_relu):
             self.relus.append(nn.Sequential(nn.Linear(params.emb_dim, params.emb_dim),nn.ReLU()
             ))
 
@@ -55,13 +55,10 @@ class Mapping(nn.Module):
     
     def forward(self, x):
         z = self.linear(x)
-        if self.is_cuda:
-            z = z.cuda()
-        for relu in self.relus:
-            xxx = relu(x)
-            print(type(z))
-            print(type(xxx))
-            z = torch.add(z, xxx)
+        # if self.is_cuda:
+        #     z = z.cuda()
+        for i in range(self.num_relu):
+            z = torch.add(z, self.relus[i](x))
         return z
 
 def build_model(params, with_dis):
