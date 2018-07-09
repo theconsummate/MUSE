@@ -40,17 +40,20 @@ class Discriminator(nn.Module):
 class Mapping(nn.Module):
     def __init__(self, params):
         super(Mapping, self).__init__()
+        num_relu = 4
         self.linear = nn.Linear(params.emb_dim, params.emb_dim, bias=False)
-        self.relu = nn.Sequential(
-            nn.Linear(params.emb_dim, params.emb_dim),
-            nn.ReLU()
-            )
+        self.relus = []
+        for i in range(num_relu):
+            self.relus.append(nn.Sequential(nn.Linear(params.emb_dim, params.emb_dim),nn.ReLU()
+            ))
 
         if getattr(params, 'map_id_init', True):
             self.linear.weight.data.copy_(torch.diag(torch.ones(params.emb_dim)))
     
     def forward(self, x):
-        z = torch.add(self.linear(x), self.relu(x))
+        z = self.linear(x)
+        for relu in self.relus:
+            z = torch.add(z, relu(x))
         return z
 
 def build_model(params, with_dis):
