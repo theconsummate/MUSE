@@ -55,10 +55,8 @@ class Mapping(nn.Module):
     
     def forward(self, x):
         z = self.linear(x)
-        # if self.is_cuda:
-        #     z = z.cuda()
         for i in range(self.num_relu):
-            z = torch.add(z, self.relus[i](x))
+            z = torch.add(z, self.relus[i].cuda()(x) if self.is_cuda else self.relus[i](x))
         return z
 
 def build_model(params, with_dis):
