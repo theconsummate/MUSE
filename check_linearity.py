@@ -6,7 +6,7 @@ import torch
 
 parser = argparse.ArgumentParser(description='checking linearity')
 
-parser.add_argument("--cuda", type=bool_flag, default=False, help="Run on GPU")
+parser.add_argument("--cuda", type=bool_flag, default=True, help="Run on GPU")
 # data
 parser.add_argument("--src_lang", type=str, default='en', help="Source language")
 parser.add_argument("--tgt_lang", type=str, default='es', help="Target language")
@@ -34,7 +34,7 @@ for i in range(params.num_samples):
     x1 = _src_emb[ids[0]]
     x2 = _src_emb[ids[1]]
     mx1 = mapping(x1)
-    error += torch.dist(mapping(x1 + x2) - mx1 - mapping(x2), torch.zeros(mx1.shape))
+    error += torch.dist(mapping(x1 + x2) - mx1 - mapping(x2), torch.zeros(mx1.shape).cuda())
 
 error = error/params.num_samples
 print(error)
