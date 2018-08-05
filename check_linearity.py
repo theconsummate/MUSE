@@ -17,6 +17,7 @@ parser.add_argument("--src_emb", type=str, default="", help="Reload source embed
 parser.add_argument("--tgt_emb", type=str, default="", help="Reload target embeddings")
 parser.add_argument("--normalize_embeddings", type=str, default="", help="Normalize embeddings before training")
 
+parser.add_argument("--num_samples", type=int, default=10, help="Number of times samples should be taken.")
 
 # parse parameters
 params = parser.parse_args()
@@ -25,10 +26,15 @@ fp = "dumped/piecewise/fourrelu/best_mapping.pth"
 
 src_dico, _src_emb = load_embeddings(params, source=True)
 
-# mapping = torch.load()
+mapping = torch.load()
+error = 0
 
-for i in range(10):
+for i in range(params.num_samples):
     ids = random.sample(range(1, params.max_vocab), 2)
     x1 = _src_emb[ids[0]]
     x2 = _src_emb[ids[1]]
-    print(i)
+    mx1 = mapping(x1)
+    error += torch.dist(mapping(x1 + x2) - mx1 - mapping(x2), torch.zeros(mx1.shape))
+
+error = error/params.num_samples
+print(error)
