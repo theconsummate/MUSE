@@ -1,5 +1,8 @@
 import argparse
 from src.utils import load_embeddings, normalize_embeddings
+from src.utils import bool_flag
+import random
+import torch
 
 parser = argparse.ArgumentParser(description='checking linearity')
 
@@ -18,5 +21,14 @@ parser.add_argument("--normalize_embeddings", type=str, default="", help="Normal
 # parse parameters
 params = parser.parse_args()
 
+fp = "dumped/piecewise/fourrelu/best_mapping.pth"
 
 src_dico, _src_emb = load_embeddings(params, source=True)
+
+# mapping = torch.load()
+
+for i in range(10):
+    ids = random.sample(range(1, params.max_vocab), 2)
+    x1 = _src_emb[ids[0]]
+    x2 = _src_emb[ids[1]]
+    print(i)
