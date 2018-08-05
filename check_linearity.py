@@ -26,7 +26,7 @@ fp = "dumped/piecewise/fourrelu/best_mapping.pth"
 
 src_dico, _src_emb = load_embeddings(params, source=True)
 
-mapping = torch.load()
+mapping = torch.load(fp)
 error = 0
 
 for i in range(params.num_samples):
