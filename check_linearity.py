@@ -33,7 +33,10 @@ for i in range(params.num_samples):
     x1 = _src_emb[ids[0]]
     x2 = _src_emb[ids[1]]
     mx1 = mapping(x1)
-    error += torch.dist(mapping(x1 + x2) - mx1 - mapping(x2), torch.zeros(mx1.shape).cuda())
+    zeros = torch.zeros(mx1.shape)
+    if params.cuda:
+        zeros = zeros.cuda()
+    error += torch.dist(mapping(x1 + x2) - mx1 - mapping(x2), zeros)
 
 error = error/params.num_samples
 print(error)
