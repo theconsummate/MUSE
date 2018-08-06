@@ -18,15 +18,14 @@ parser.add_argument("--tgt_emb", type=str, default="", help="Reload target embed
 parser.add_argument("--normalize_embeddings", type=str, default="", help="Normalize embeddings before training")
 
 parser.add_argument("--num_samples", type=int, default=10, help="Number of times samples should be taken.")
+parser.add_argument("--model_path", type=str, default="dumped/piecewise/fourrelu/best_mapping.pth", help="path for mapping file")
 
 # parse parameters
 params = parser.parse_args()
 
-fp = "dumped/piecewise/fourrelu/best_mapping.pth"
-
 src_dico, _src_emb = load_embeddings(params, source=True)
 
-mapping = torch.load(fp)
+mapping = torch.load(params.model_path)
 error = 0
 
 for i in range(params.num_samples):
