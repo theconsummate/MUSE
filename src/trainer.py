@@ -83,23 +83,43 @@ class Trainer(object):
     def dis_step(self, stats):
         """
         Train the discriminator.
+        Loss is Wasserstein
         """
         self.discriminator.train()
 
+        one = torch.ones(self.params.batch_size)
+        mone = one * -1
+
         # loss
         x, y = self.get_dis_xy(volatile=True)
+        preds_t = self.discriminator(Variable(x[self.params.batch_size:].data))
+
+        # check NaN
+        if (preds_t != preds_t).data.any():
+            logger.error("NaN detected (discriminator)")
+            exit()
+        
+        self.dis_optimizer.zero_grad()
+        preds_t.backward(one)
+
+        # train with fake
+        preds_s = self.discriminator(Variable(x[:self.params.batch_size].data))
+        
+        # check NaN
+        if (preds_s != preds_s).data.any():
+            logger.error("NaN detected (discriminator)")
+            exit()
+        
+        preds_s.backward(mone)
+        
+        # log the original loss
         preds = self.discriminator(Variable(x.data))
         loss = F.binary_cross_entropy(preds, y)
         stats['DIS_COSTS'].append(loss.data[0])
 
-        # check NaN
-        if (loss != loss).data.any():
-            logger.error("NaN detected (discriminator)")
-            exit()
-
         # optim
-        self.dis_optimizer.zero_grad()
-        loss.backward()
+        # self.dis_optimizer.zero_grad()
+        # loss.backward()
         self.dis_optimizer.step()
         clip_parameters(self.discriminator, self.params.dis_clip_weights)
 
@@ -114,8 +134,8 @@ class Trainer(object):
 
         # loss
         x, y = self.get_dis_xy(volatile=False)
-        preds = self.discriminator(x)
-        loss = F.binary_cross_entropy(preds, 1 - y)
+        preds = self.discriminator(x[:self.params.batch_size])
+        loss = F.binary_cross_entropy(preds, 1 - y[:self.params.batch_size])
         loss = self.params.dis_lambda * loss
 
         # check NaN
