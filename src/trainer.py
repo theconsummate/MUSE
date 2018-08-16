@@ -89,6 +89,9 @@ class Trainer(object):
 
         one = torch.ones(self.params.batch_size)
         mone = one * -1
+        
+        if self.params.cuda:
+            one, mone = one.cuda(), mone.cuda()
 
         # loss
         x, y = self.get_dis_xy(volatile=True)
