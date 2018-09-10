@@ -214,7 +214,7 @@ class Evaluator(object):
         """
         self.monolingual_wordsim(to_log)
         self.crosslingual_wordsim(to_log)
-        self.word_translation(to_log)
+        # self.word_translation(to_log)
         self.sent_translation(to_log)
         self.dist_mean_cosine(to_log)
 
